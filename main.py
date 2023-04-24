@@ -47,8 +47,6 @@ async def cancel_handler(message: types.Message, state: FSMContext):
 
 @dp.message_handler(state=config.Form.city)
 async def process_name(message: types.Message, state: FSMContext):
-    """Process user name"""
-
     # Finish our conversation
     async with state.proxy() as data:
         data['city'] = message.text

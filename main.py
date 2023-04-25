@@ -21,19 +21,22 @@ memstore = MemoryStorage()
 dp = Dispatcher(bot, storage=memstore)
 
 
+#Функция приветствия
 @dp.message_handler(commands=['start'])
 async def send_welcome(message: types.Message):
     await message.reply("Приветствую ВАС!\nЯ бот компании\nЯ имею команды "
                         "как\n /get_Weather \n /get_Exchange \n /get_Cute \n "
-                        "/create_Poll")
+                         "/create_Poll")
 
 
+#Функция узнать погоду
 @dp.message_handler(commands=['get_Weather'])
 async def send_Weather(message: types.Message):
     await config.Form.city.set()
     await message.answer('Погоду какого города узнать?')
 
 
+#Функция отклонить запрос
 @dp.message_handler(state='*', commands=['cancel'])
 async def cancel_handler(message: types.Message, state: FSMContext):
     """Allow user to cancel action via /cancel command"""
@@ -47,6 +50,7 @@ async def cancel_handler(message: types.Message, state: FSMContext):
     await message.reply('Cancelled.')
 
 
+#Функция брать имя города и возвращать погоду
 @dp.message_handler(state=config.Form.city)
 async def process_name(message: types.Message, state: FSMContext):
     # Finish our conversation
@@ -56,12 +60,14 @@ async def process_name(message: types.Message, state: FSMContext):
     await message.reply(f"{main_weather.get_message(message.text)}")
 
 
+#Функция конвертация в доллар
 @dp.message_handler(commands=['get_Exchange'])
 async def send_Converted_Currencies(message: types.Message):
     await config.Form.tg.set()
     await message.answer('Сколько тенге перевести на доллар?')
 
 
+#Функция возвращение конвертации в доллар
 @dp.message_handler(state=config.Form.tg)
 async def process_name(message: types.Message, state: FSMContext):
     # Finish our conversation
@@ -70,7 +76,7 @@ async def process_name(message: types.Message, state: FSMContext):
 
     await message.reply(f"{main_converted.get_coin(message.text)}")
 
-
+#Функция отправки милых фотографии
 @dp.message_handler(commands=['get_Cute'])
 async def send_image(message: types.Message):
     n = random.randint(0,5)
@@ -79,6 +85,7 @@ async def send_image(message: types.Message):
                          chat_id=message.chat.id)
 
 
+#Функция создания опросника
 @dp.message_handler(commands=['create_Poll'])
 async def create_poll(message: types.Message):
     await bot.send_poll(question='How are u?',
